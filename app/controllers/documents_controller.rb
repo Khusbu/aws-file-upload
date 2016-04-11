@@ -82,6 +82,6 @@ class DocumentsController < ApplicationController
     def get_aws_object(object_key)
       s3 = Aws::S3::Resource.new({region:ENV['AWS_REGION'],
                                   credentials: Aws::Credentials.new(ENV['AWS_ACCESS_ID'], ENV['AWS_SECRET_KEY'])})
-      obj = s3.bucket('apayi.documents.bucket').object(object_key)
+      obj = s3.bucket(ENV['AWS_S3_BUCKET']).object(object_key)
     end
 end
