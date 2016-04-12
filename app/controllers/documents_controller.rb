@@ -10,8 +10,10 @@ class DocumentsController < ApplicationController
   # GET /documents/1
   # GET /documents/1.json
   def show
-    # obj = get_aws_object(@document.key)
-    # @url = obj.presigned_url(:get, expires_in: 600)
+    if params[:show]
+      obj = get_aws_object(@document.key)
+      @url = obj.presigned_url(:get, expires_in: 600)
+    end
   end
 
   # GET /documents/new
@@ -62,12 +64,6 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def fetch_object
-    @document = Document.find(params[:document_id])
-    obj = get_aws_object(@document.key)
-    @url = obj.presigned_url(:get, expires_in: 600)
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_document
@@ -82,6 +78,6 @@ class DocumentsController < ApplicationController
     def get_aws_object(object_key)
       s3 = Aws::S3::Resource.new({region:ENV['AWS_REGION'],
                                   credentials: Aws::Credentials.new(ENV['AWS_ACCESS_ID'], ENV['AWS_SECRET_KEY'])})
-      obj = s3.bucket('apayi.documents.bucket').object(object_key)
+      obj = s3.bucket(ENV['AWS_S3_BUCKET']).object(object_key)
     end
 end
